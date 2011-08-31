@@ -464,7 +464,7 @@ namespace org_pqrs_KeyRemap4MacBook {
       if (InputModeDetail::NONE == wsd_learned_.inputmodedetail) {
         wsd_learned_ = curWSD00;
         omit_initialize_ = false;
-        set_indexes_directly(SavedInputModeIndex::NONE, index, SavedInputModeIndex::NONE);
+        savedInputMode_[SavedInputModeType::CURRENT].set(index);
       }
       wsd_save_[index] = curWSD00;
       return true;
@@ -508,7 +508,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       case SeesawType::KANA_OTHERS:
         if (savedInputMode_[SavedInputModeType::OTHERS].get() == SavedInputModeIndex::NONE) {
-          set_indexes_directly(SavedInputModeIndex::NONE, SavedInputModeIndex::NONE, SavedInputModeIndex::KATA);
+          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATA);
         }
         fromIndex = SavedInputModeIndex::HIRA;
         toIndex   = savedInputMode_[SavedInputModeType::OTHERS].get();
@@ -516,7 +516,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       case SeesawType::EISUU_OTHERS:
         if (savedInputMode_[SavedInputModeType::OTHERS].get() == SavedInputModeIndex::NONE) {
-          set_indexes_directly(SavedInputModeIndex::NONE, SavedInputModeIndex::NONE, SavedInputModeIndex::KATA);
+          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATA);
         }
         fromIndex = SavedInputModeIndex::EISU;
         toIndex   = savedInputMode_[SavedInputModeType::OTHERS].get();
@@ -528,7 +528,8 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     if (savedInputMode_[SavedInputModeType::CURRENT].get() != SavedInputModeIndex::NONE && savedInputMode_[SavedInputModeType::PREVIOUS].get() != SavedInputModeIndex::NONE) {
       if (type == SeesawType::CUR_PRE) {
-        set_indexes_directly(fromIndex, toIndex, SavedInputModeIndex::NONE);
+        savedInputMode_[SavedInputModeType::PREVIOUS].set(fromIndex);
+        savedInputMode_[SavedInputModeType::CURRENT].set(toIndex);
         return savedInputMode_[SavedInputModeType::CURRENT].get();
       } else {
         tmp_index = savedInputMode_[SavedInputModeType::CURRENT].get();
@@ -537,9 +538,9 @@ namespace org_pqrs_KeyRemap4MacBook {
     } else {
       if (type == SeesawType::CUR_PRE) {
         if (savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1 > SavedInputModeIndex::MAX) {
-          set_indexes_directly(SavedInputModeIndex::NONE, SavedInputModeIndex::EISU, SavedInputModeIndex::NONE);
+          savedInputMode_[SavedInputModeType::CURRENT].set(SavedInputModeIndex::EISU);
         } else {
-          set_indexes_directly(SavedInputModeIndex::NONE, static_cast<SavedInputModeIndex::Value>(savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1), SavedInputModeIndex::NONE);
+          savedInputMode_[SavedInputModeType::CURRENT].set(static_cast<SavedInputModeIndex::Value>(savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1));
         }
         return savedInputMode_[SavedInputModeType::CURRENT].get();
       } else {
@@ -547,13 +548,16 @@ namespace org_pqrs_KeyRemap4MacBook {
       }
     }
     if (savedInputMode_[SavedInputModeType::CURRENT].get() != fromIndex) {
-      set_indexes_directly(tmp_index, fromIndex, SavedInputModeIndex::NONE);
+      savedInputMode_[SavedInputModeType::PREVIOUS].set(tmp_index);
+      savedInputMode_[SavedInputModeType::CURRENT].set(fromIndex);
     } else {
-      set_indexes_directly(fromIndex, toIndex, SavedInputModeIndex::NONE);
+      savedInputMode_[SavedInputModeType::PREVIOUS].set(fromIndex);
+      savedInputMode_[SavedInputModeType::CURRENT].set(toIndex);
     }
     if (seesaw_init2_) {
       if (savedInputMode_[SavedInputModeType::CURRENT].get() != fromIndex) {
-        set_indexes_directly(savedInputMode_[SavedInputModeType::CURRENT].get(), fromIndex, SavedInputModeIndex::NONE);
+        savedInputMode_[SavedInputModeType::PREVIOUS].set(savedInputMode_[SavedInputModeType::CURRENT].get());
+        savedInputMode_[SavedInputModeType::CURRENT].set(fromIndex);
       }
       seesaw_init2_ = false;
     }
@@ -625,28 +629,19 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     if (ret != SavedInputModeIndex::NONE) {
       if (replacetype == ReplaceType::SKIP_PREVIOUS) {
-        set_indexes_directly(SavedInputModeIndex::NONE, ret, SavedInputModeIndex::NONE);
+        savedInputMode_[SavedInputModeType::CURRENT].set(ret);
       } else {
-        set_indexes_directly(cur_index_tmp, ret, SavedInputModeIndex::NONE);
+        savedInputMode_[SavedInputModeType::PREVIOUS].set(cur_index_tmp);
+        savedInputMode_[SavedInputModeType::CURRENT].set(ret);
       }
       if (replacetype == ReplaceType::SKIP_PREVIOUS || replacetype == ReplaceType::SKIP_SPECIFIC) {
-        set_indexes_directly(SavedInputModeIndex::NONE, SavedInputModeIndex::NONE, ret);
+        savedInputMode_[SavedInputModeType::OTHERS].set(ret);
       }
     } else {
       ret = cur_index_tmp;
     }
 
     return ret;
-  }
-
-  void
-  VirtualKey::VK_JIS_IM_CHANGE::set_indexes_directly(SavedInputModeIndex::Value new_pre,
-                                                     SavedInputModeIndex::Value new_cur,
-                                                     SavedInputModeIndex::Value new_others)
-  {
-    savedInputMode_[SavedInputModeType::PREVIOUS].set(new_pre);
-    savedInputMode_[SavedInputModeType::CURRENT].set(new_cur);
-    savedInputMode_[SavedInputModeType::OTHERS].set(new_others);
   }
 
   void
