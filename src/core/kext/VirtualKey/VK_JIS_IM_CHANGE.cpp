@@ -647,7 +647,8 @@ namespace org_pqrs_KeyRemap4MacBook {
   void
   VirtualKey::VK_JIS_IM_CHANGE::set_new_index(SavedInputModeIndex::Value index)
   {
-    if (savedInputMode_[SavedInputModeType::CURRENT].get() != SavedInputModeIndex::NONE && savedInputMode_[SavedInputModeType::PREVIOUS].get() != SavedInputModeIndex::NONE) {
+    if (savedInputMode_[SavedInputModeType::CURRENT].get() != SavedInputModeIndex::NONE &&
+        savedInputMode_[SavedInputModeType::PREVIOUS].get() != SavedInputModeIndex::NONE) {
       if (savedInputMode_[SavedInputModeType::CURRENT].get() != index) {
         savedInputMode_[SavedInputModeType::PREVIOUS].set(savedInputMode_[SavedInputModeType::CURRENT].get());
         savedInputMode_[SavedInputModeType::CURRENT].set(index);
