@@ -49,15 +49,15 @@ namespace org_pqrs_KeyRemap4MacBook {
       public:
         enum Value {
           // XXX: change NONE to 0.
-          NONE  = -1,
+          NONE            = -1,
           // XXX: change all values to auto-indexed.
-          EISU  = 1,
-          HIRA  = 2,
-          KATA  = 3,
-          HKAT  = 4,
-          AINU  = 5,
-          FEIS  = 6,
-          MAX   = 6,
+          ROMAN           = 1,
+          HIRAGANA        = 2,
+          KATAKANA        = 3,
+          HALFWIDTH_KANA  = 4,
+          AINU            = 5,
+          FULLWIDTH_ROMAN = 6,
+          MAX             = 6,
         };
 
         SavedInputModeIndex(void) : value_(NONE) {}

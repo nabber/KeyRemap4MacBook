@@ -137,10 +137,10 @@ namespace org_pqrs_KeyRemap4MacBook {
       if (seesawType != SeesawType::NONE) {
         index = VirtualKey::VK_JIS_IM_CHANGE::get_index_for_seesaw_AtoB_WSD(seesawType);
 
-        if (seesawType == SeesawType::EISUU_KANA   && index == SavedInputModeIndex::EISU ||
-            seesawType == SeesawType::KANA_OTHERS  && index == SavedInputModeIndex::HIRA ||
-            seesawType == SeesawType::KANA_EISUU   && index == SavedInputModeIndex::HIRA ||
-            seesawType == SeesawType::EISUU_OTHERS && index == SavedInputModeIndex::EISU) {
+        if (seesawType == SeesawType::EISUU_KANA   && index == SavedInputModeIndex::ROMAN ||
+            seesawType == SeesawType::KANA_OTHERS  && index == SavedInputModeIndex::HIRAGANA ||
+            seesawType == SeesawType::KANA_EISUU   && index == SavedInputModeIndex::HIRAGANA ||
+            seesawType == SeesawType::EISUU_OTHERS && index == SavedInputModeIndex::ROMAN) {
           VirtualKey::VK_JIS_IM_CHANGE::scheduleCallback(VirtualKey::VK_JIS_IM_CHANGE::CallbackType::SEESAW_INIT);
         }
 
@@ -167,14 +167,14 @@ namespace org_pqrs_KeyRemap4MacBook {
           replacetype = ReplaceType::NOSKIP;
         } else {
           if (skipType == SkipType::EISUU_KANA) {
-            skip00[SavedInputModeIndex::EISU] = 1;
-            skip00[SavedInputModeIndex::HIRA] = 1;
+            skip00[SavedInputModeIndex::ROMAN] = 1;
+            skip00[SavedInputModeIndex::HIRAGANA] = 1;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else if (skipType == SkipType::KANA) {
-            skip00[SavedInputModeIndex::HIRA] = 1;
+            skip00[SavedInputModeIndex::HIRAGANA] = 1;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else if (skipType == SkipType::EISUU) {
-            skip00[SavedInputModeIndex::EISU] = 1;
+            skip00[SavedInputModeIndex::ROMAN] = 1;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else {
             replacetype = ReplaceType::SKIP_PREVIOUS;
@@ -184,27 +184,27 @@ namespace org_pqrs_KeyRemap4MacBook {
       }
 
       switch (index) {
-        case SavedInputModeIndex::EISU:
+        case SavedInputModeIndex::ROMAN:
           newkeycode_ = KeyCode::JIS_COLON;
           newflag_    = ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L;
           break;
 
-        case SavedInputModeIndex::HIRA:
+        case SavedInputModeIndex::HIRAGANA:
           newkeycode_ = KeyCode::J;
           newflag_    = ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L;
           break;
 
-        case SavedInputModeIndex::KATA:
+        case SavedInputModeIndex::KATAKANA:
           newkeycode_ = KeyCode::K;
           newflag_    = ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L;
           break;
 
-        case SavedInputModeIndex::HKAT:
+        case SavedInputModeIndex::HALFWIDTH_KANA:
           newkeycode_ = KeyCode::SEMICOLON;
           newflag_    = ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L;
           break;
 
-        case SavedInputModeIndex::FEIS:
+        case SavedInputModeIndex::FULLWIDTH_ROMAN:
           newkeycode_ = KeyCode::L;
           newflag_    = ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L;
           break;
@@ -378,12 +378,12 @@ namespace org_pqrs_KeyRemap4MacBook {
       inputmodedetail == InputModeDetail::JAPANESE_HIRAGANA;
     }
 
-    if (inputmodedetail == InputModeDetail::ROMAN)                    { return SavedInputModeIndex::EISU; }
-    if (inputmodedetail == InputModeDetail::JAPANESE_HIRAGANA)        { return SavedInputModeIndex::HIRA; }
-    if (inputmodedetail == InputModeDetail::JAPANESE_KATAKANA)        { return SavedInputModeIndex::KATA; }
-    if (inputmodedetail == InputModeDetail::JAPANESE_HALFWIDTH_KANA)  { return SavedInputModeIndex::HKAT; }
+    if (inputmodedetail == InputModeDetail::ROMAN)                    { return SavedInputModeIndex::ROMAN; }
+    if (inputmodedetail == InputModeDetail::JAPANESE_HIRAGANA)        { return SavedInputModeIndex::HIRAGANA; }
+    if (inputmodedetail == InputModeDetail::JAPANESE_KATAKANA)        { return SavedInputModeIndex::KATAKANA; }
+    if (inputmodedetail == InputModeDetail::JAPANESE_HALFWIDTH_KANA)  { return SavedInputModeIndex::HALFWIDTH_KANA; }
     if (inputmodedetail == InputModeDetail::AINU)                     { return SavedInputModeIndex::AINU; }
-    if (inputmodedetail == InputModeDetail::JAPANESE_FULLWIDTH_ROMAN) { return SavedInputModeIndex::FEIS; }
+    if (inputmodedetail == InputModeDetail::JAPANESE_FULLWIDTH_ROMAN) { return SavedInputModeIndex::FULLWIDTH_ROMAN; }
 
     return SavedInputModeIndex::NONE;
   }
@@ -497,28 +497,28 @@ namespace org_pqrs_KeyRemap4MacBook {
         break;
 
       case SeesawType::EISUU_KANA:
-        fromIndex = SavedInputModeIndex::EISU;
-        toIndex   = SavedInputModeIndex::HIRA;
+        fromIndex = SavedInputModeIndex::ROMAN;
+        toIndex   = SavedInputModeIndex::HIRAGANA;
         break;
 
       case SeesawType::KANA_EISUU:
-        fromIndex = SavedInputModeIndex::HIRA;
-        toIndex   = SavedInputModeIndex::EISU;
+        fromIndex = SavedInputModeIndex::HIRAGANA;
+        toIndex   = SavedInputModeIndex::ROMAN;
         break;
 
       case SeesawType::KANA_OTHERS:
         if (savedInputMode_[SavedInputModeType::OTHERS].get() == SavedInputModeIndex::NONE) {
-          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATA);
+          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATAKANA);
         }
-        fromIndex = SavedInputModeIndex::HIRA;
+        fromIndex = SavedInputModeIndex::HIRAGANA;
         toIndex   = savedInputMode_[SavedInputModeType::OTHERS].get();
         break;
 
       case SeesawType::EISUU_OTHERS:
         if (savedInputMode_[SavedInputModeType::OTHERS].get() == SavedInputModeIndex::NONE) {
-          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATA);
+          savedInputMode_[SavedInputModeType::OTHERS].set(SavedInputModeIndex::KATAKANA);
         }
-        fromIndex = SavedInputModeIndex::EISU;
+        fromIndex = SavedInputModeIndex::ROMAN;
         toIndex   = savedInputMode_[SavedInputModeType::OTHERS].get();
         break;
 
@@ -538,7 +538,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     } else {
       if (type == SeesawType::CUR_PRE) {
         if (savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1 > SavedInputModeIndex::MAX) {
-          savedInputMode_[SavedInputModeType::CURRENT].set(SavedInputModeIndex::EISU);
+          savedInputMode_[SavedInputModeType::CURRENT].set(SavedInputModeIndex::ROMAN);
         } else {
           savedInputMode_[SavedInputModeType::CURRENT].set(static_cast<SavedInputModeIndex::Value>(savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1));
         }
@@ -573,14 +573,14 @@ namespace org_pqrs_KeyRemap4MacBook {
     cur_index_tmp    = savedInputMode_[SavedInputModeType::CURRENT].get();
     others_index_tmp = savedInputMode_[SavedInputModeType::OTHERS].get();
 
-    bool cond00 = (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::EISU);
-    bool cond01 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HKAT && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATA);
-    bool cond02 = (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HKAT);
-    bool cond10 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::EISU && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRA);
-    bool cond11 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRA && savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATA);
-    bool cond12 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HKAT && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRA && savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HKAT);
-    bool cond13 = (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HKAT && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATA);
-    bool cond14 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HKAT);
+    bool cond00 = (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::ROMAN);
+    bool cond01 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA);
+    bool cond02 = (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA);
+    bool cond10 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA);
+    bool cond11 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA && savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATAKANA);
+    bool cond12 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA && savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HALFWIDTH_KANA);
+    bool cond13 = (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HALFWIDTH_KANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA);
+    bool cond14 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA && savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA);
     if (replacetype == ReplaceType::SKIP_PREVIOUS) {
       skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = 1;
 
@@ -592,7 +592,7 @@ namespace org_pqrs_KeyRemap4MacBook {
           (cond00 || cond01 || cond02)) {
         sign_plus_minus2_ = -1;
         if (cond00) {
-          others_index_tmp = SavedInputModeIndex::EISU;
+          others_index_tmp = SavedInputModeIndex::ROMAN;
         }
       } else if (sign_plus_minus2_ == -1     && (
                    cond10 || cond11 || cond12 || cond13 || cond14)) {
