@@ -81,53 +81,52 @@ namespace org_pqrs_KeyRemap4MacBook {
   bool
   VirtualKey::VK_JIS_IM_CHANGE::handle(const Params_KeyboardEventCallBack& params)
   {
-    KeyCode key00  = params.key;
     SavedInputModeIndex::Value index = SavedInputModeIndex::NONE;
     bool skip00[SavedInputModeIndex::END_] = { false };
     ReplaceType::Value replacetype = ReplaceType::NONE;
     SeesawType::Value seesawType = SeesawType::NONE;
     SkipType::Value skipType = SkipType::NONE;
 
-    if (key00 == KeyCode::VK_JIS_IM_CHANGE_CUR_PRE ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_FORWARD  ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_BACK ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_FORWARD ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_BACK ||
+    if (params.key == KeyCode::VK_JIS_IM_CHANGE_CUR_PRE ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_FORWARD  ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_BACK ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_FORWARD ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_BACK ||
 
-        key00 == KeyCode::VK_JIS_IM_CHANGE_EISUU_KANA ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_EISUU_OTHERS ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_KANA_EISUU ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_KANA_OTHERS ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA_EISUU ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_EISUU ||
-        key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA) {} else {
+        params.key == KeyCode::VK_JIS_IM_CHANGE_EISUU_KANA ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_EISUU_OTHERS ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_KANA_EISUU ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_KANA_OTHERS ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA_EISUU ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_EISUU ||
+        params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA) {} else {
       return false;
     }
 
     if (params.ex_iskeydown) {
-      if (key00 == KeyCode::VK_JIS_IM_CHANGE_CUR_PRE) {
+      if (params.key == KeyCode::VK_JIS_IM_CHANGE_CUR_PRE) {
         seesawType = SeesawType::CUR_PRE;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_EISUU_KANA) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_EISUU_KANA) {
         seesawType = SeesawType::EISUU_KANA;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_KANA_OTHERS) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_KANA_OTHERS) {
         seesawType = SeesawType::KANA_OTHERS;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_KANA_EISUU) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_KANA_EISUU) {
         seesawType = SeesawType::KANA_EISUU;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_EISUU_OTHERS) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_EISUU_OTHERS) {
         seesawType = SeesawType::EISUU_OTHERS;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_FORWARD) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_FORWARD) {
         skipType = SkipType::NONE_FORWARD;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_FORWARD) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_FORWARD) {
         skipType = SkipType::PRE_FORWARD;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_BACK) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_NONE_BACK) {
         skipType = SkipType::NONE_BACK;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_BACK) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_PRE_BACK) {
         skipType = SkipType::PRE_BACK;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA_EISUU) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA_EISUU) {
         skipType = SkipType::EISUU_KANA;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_KANA) {
         skipType = SkipType::KANA;
-      } else if (key00 == KeyCode::VK_JIS_IM_CHANGE_SKIP_EISUU) {
+      } else if (params.key == KeyCode::VK_JIS_IM_CHANGE_SKIP_EISUU) {
         skipType = SkipType::EISUU;
       }
 
