@@ -73,6 +73,14 @@ namespace org_pqrs_KeyRemap4MacBook {
         Value value_;
       };
 
+      class NextInputSourceDetailDirection {
+      public:
+        enum Value {
+          FORWARD,
+          BACKWARD,
+        };
+      };
+
       // This enum name may not be suitable.
       // I named it temporary.
       class SavedInputModeType {
@@ -82,15 +90,6 @@ namespace org_pqrs_KeyRemap4MacBook {
           CURRENT,
           OTHERS,
           END_,
-        };
-      };
-
-      class SignPlusMinus {
-      public:
-        enum Value {
-          NONE,
-          PLUS,
-          MINUS,
         };
       };
 
@@ -156,7 +155,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static SavedInputModeIndex::Value get_index_for_seesaw_AtoB_WSD(SeesawType::Value type);
       // XXX: DO NOT PASS int[] without length!!!
-      static SavedInputModeIndex::Value get_index_for_replaceWSD(SignPlusMinus::Value sign00, bool skip[], ReplaceType::Value replacetype);
+      static SavedInputModeIndex::Value get_index_for_replaceWSD(NextInputSourceDetailDirection::Value direction, bool skip[], ReplaceType::Value replacetype);
 
       static void set_new_index(SavedInputModeIndex::Value index);
 
@@ -170,7 +169,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static SavedInputModeIndex savedInputMode_[SavedInputModeType::END_];
 
-      static SignPlusMinus::Value sign_plus_minus2_;
+      static NextInputSourceDetailDirection::Value nextInputSourceDetailDirection_;
       static int counter_plus_minus2_;
       static int pre_counter_plus_minus2_;
       static bool seesaw_init2_;

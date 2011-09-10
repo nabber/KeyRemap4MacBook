@@ -21,7 +21,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex VirtualKey::VK_JIS_IM_CHANGE::savedInputMode_[SavedInputModeType::END_];
 
-  VirtualKey::VK_JIS_IM_CHANGE::SignPlusMinus::Value VirtualKey::VK_JIS_IM_CHANGE::sign_plus_minus2_ = SignPlusMinus::NONE;
+  VirtualKey::VK_JIS_IM_CHANGE::NextInputSourceDetailDirection::Value VirtualKey::VK_JIS_IM_CHANGE::nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
   int VirtualKey::VK_JIS_IM_CHANGE::counter_plus_minus2_ = 0;
   int VirtualKey::VK_JIS_IM_CHANGE::pre_counter_plus_minus2_ = 0;
   bool VirtualKey::VK_JIS_IM_CHANGE::seesaw_init2_ = false;
@@ -145,7 +145,7 @@ namespace org_pqrs_KeyRemap4MacBook {
         }
 
       } else {
-        SignPlusMinus::Value sign00;
+        NextInputSourceDetailDirection::Value direction;
         if (skipType == SkipType::EISUU_KANA ||
             skipType == SkipType::KANA ||
             skipType == SkipType::EISUU) {
@@ -154,9 +154,9 @@ namespace org_pqrs_KeyRemap4MacBook {
 
         if (skipType == SkipType::NONE_BACK ||
             skipType == SkipType::PRE_BACK) {
-          sign00 = SignPlusMinus::MINUS;
+          direction = NextInputSourceDetailDirection::BACKWARD;
         } else {
-          sign00 = SignPlusMinus::PLUS;
+          direction = NextInputSourceDetailDirection::FORWARD;
         }
 
         if (! use_ainu) {
@@ -180,7 +180,7 @@ namespace org_pqrs_KeyRemap4MacBook {
             replacetype = ReplaceType::SKIP_PREVIOUS;
           }
         }
-        index = VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(sign00, skip00, replacetype);
+        index = VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(direction, skip00, replacetype);
       }
 
       switch (index) {
@@ -359,14 +359,13 @@ namespace org_pqrs_KeyRemap4MacBook {
         counter_plus_minus2_ = 0;
 
         // Toggle
-        switch (sign_plus_minus2_) {
-          case SignPlusMinus::NONE:
-          case SignPlusMinus::PLUS:
-            sign_plus_minus2_ = SignPlusMinus::MINUS;
+        switch (nextInputSourceDetailDirection_) {
+          case NextInputSourceDetailDirection::FORWARD:
+            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
             break;
 
-          case SignPlusMinus::MINUS:
-            sign_plus_minus2_ = SignPlusMinus::PLUS;
+          case NextInputSourceDetailDirection::BACKWARD:
+            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
             break;
         }
 
@@ -575,7 +574,7 @@ namespace org_pqrs_KeyRemap4MacBook {
   }
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::Value
-  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(SignPlusMinus::Value sign00, bool skip[], ReplaceType::Value replacetype)
+  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(NextInputSourceDetailDirection::Value direction, bool skip[], ReplaceType::Value replacetype)
   {
     SavedInputModeIndex::Value cur_index_tmp, others_index_tmp;
 
@@ -588,24 +587,22 @@ namespace org_pqrs_KeyRemap4MacBook {
       skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = true;
 
     } else if (replacetype == ReplaceType::SKIP_SPECIFIC) {
-      switch (sign_plus_minus2_) {
-        case SignPlusMinus::NONE:
-          // pass-through (== no break)
-          sign_plus_minus2_ = SignPlusMinus::PLUS;
-        case SignPlusMinus::PLUS:
+      // XXX: Is SKIP_SPECIFIC suitable name?
+      switch (nextInputSourceDetailDirection_) {
+        case NextInputSourceDetailDirection::FORWARD:
           if (cond00 ||
               (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
                savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
               (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
                savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
-            sign_plus_minus2_ = SignPlusMinus::MINUS;
+            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
             if (cond00) {
               others_index_tmp = SavedInputModeIndex::ROMAN;
             }
           }
           break;
 
-        case SignPlusMinus::MINUS:
+        case NextInputSourceDetailDirection::BACKWARD:
           if ((savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN &&
                savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA) ||
               (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
@@ -618,10 +615,10 @@ namespace org_pqrs_KeyRemap4MacBook {
                savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
               (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
                savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
-            sign_plus_minus2_ = SignPlusMinus::PLUS;
+            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
           }
       }
-      sign00 = sign_plus_minus2_;
+      direction = nextInputSourceDetailDirection_;
     }
 
     SavedInputModeIndex::Value ret = SavedInputModeIndex::NONE;
@@ -629,7 +626,7 @@ namespace org_pqrs_KeyRemap4MacBook {
       // ----------------------------------------
       // calc index
 
-      // when sign00 == SignPlusMinus::PLUS
+      // when direction == NextInputSourceDetailDirection::FORWARD
       //
       // |------------------+-------------------| SavedInputModeIndex
       //              cur_index_tmp
@@ -637,7 +634,7 @@ namespace org_pqrs_KeyRemap4MacBook {
       // ------------------>
       //
       //
-      // when sign00 == SignPlusMinus::MINUS
+      // when direction == NextInputSourceDetailDirection::BACKWARD
       //
       // |------------------+-------------------| SavedInputModeIndex
       //              cur_index_tmp
@@ -646,13 +643,11 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       int index = SavedInputModeIndex::NONE;
 
-      switch (sign00) {
-        case SignPlusMinus::NONE:
-          break;
-        case SignPlusMinus::PLUS:
+      switch (direction) {
+        case NextInputSourceDetailDirection::FORWARD:
           index = (cur_index_tmp + i);
           break;
-        case SignPlusMinus::MINUS:
+        case NextInputSourceDetailDirection::BACKWARD:
           index = (cur_index_tmp + (SavedInputModeIndex::END_ - i));
           break;
       }
