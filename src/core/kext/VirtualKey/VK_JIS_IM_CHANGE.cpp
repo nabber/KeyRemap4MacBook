@@ -21,7 +21,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex VirtualKey::VK_JIS_IM_CHANGE::savedInputMode_[SavedInputModeType::END_];
 
-  int VirtualKey::VK_JIS_IM_CHANGE::sign_plus_minus2_ = -99;
+  VirtualKey::VK_JIS_IM_CHANGE::SignPlusMinus::Value VirtualKey::VK_JIS_IM_CHANGE::sign_plus_minus2_ = SignPlusMinus::NONE;
   int VirtualKey::VK_JIS_IM_CHANGE::counter_plus_minus2_ = 0;
   int VirtualKey::VK_JIS_IM_CHANGE::pre_counter_plus_minus2_ = 0;
   bool VirtualKey::VK_JIS_IM_CHANGE::seesaw_init2_ = false;
@@ -356,10 +356,19 @@ namespace org_pqrs_KeyRemap4MacBook {
       if (counter_plus_minus2_ == pre_counter_plus_minus2_ && counter_plus_minus2_ > 0) {
         pre_counter_plus_minus2_ = 0;
         counter_plus_minus2_ = 0;
-        if (sign_plus_minus2_ == -99) {
-          sign_plus_minus2_ = 1;
+
+        // Toggle
+        switch (sign_plus_minus2_) {
+          case SignPlusMinus::NONE:
+          case SignPlusMinus::PLUS:
+            sign_plus_minus2_ = SignPlusMinus::MINUS;
+            break;
+
+          case SignPlusMinus::MINUS:
+            sign_plus_minus2_ = SignPlusMinus::PLUS;
+            break;
         }
-        sign_plus_minus2_ = -sign_plus_minus2_;
+
       } else {}
     } else {
       ++counter_plus_minus2_;
@@ -579,34 +588,39 @@ namespace org_pqrs_KeyRemap4MacBook {
       skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = 1;
 
     } else if (replacetype == ReplaceType::SKIP_SPECIFIC) {
-      if (sign_plus_minus2_ == -99) {
-        sign_plus_minus2_ = 1;
+      switch (sign_plus_minus2_) {
+        case SignPlusMinus::NONE:
+          // pass-through (== no break)
+          sign_plus_minus2_ = SignPlusMinus::PLUS;
+        case SignPlusMinus::PLUS:
+          if (cond00 ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
+            sign_plus_minus2_ = SignPlusMinus::MINUS;
+            if (cond00) {
+              others_index_tmp = SavedInputModeIndex::ROMAN;
+            }
+          }
+          break;
+
+        case SignPlusMinus::MINUS:
+          if ((savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA) ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
+               savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATAKANA) ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
+               savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HALFWIDTH_KANA) ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HALFWIDTH_KANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
+              (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
+               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
+            sign_plus_minus2_ = SignPlusMinus::PLUS;
+          }
       }
-      if (sign_plus_minus2_ == 1 &&
-          (cond00 ||
-           (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
-            savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
-           (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
-            savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA))) {
-        sign_plus_minus2_ = -1;
-        if (cond00) {
-          others_index_tmp = SavedInputModeIndex::ROMAN;
-        }
-      } else if (sign_plus_minus2_ == -1     && (
-                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN &&
-                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA) ||
-                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
-                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
-                    savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATAKANA) ||
-                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
-                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
-                    savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HALFWIDTH_KANA) ||
-                   (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HALFWIDTH_KANA &&
-                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
-                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
-                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA))) {
-        sign_plus_minus2_ = 1;
-      } else {}
       sign00 = sign_plus_minus2_;
     }
 

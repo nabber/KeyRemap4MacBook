@@ -163,7 +163,15 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static SavedInputModeIndex savedInputMode_[SavedInputModeType::END_];
 
-      static int sign_plus_minus2_;
+      class SignPlusMinus {
+      public:
+        enum Value {
+          NONE,
+          PLUS,
+          MINUS,
+        };
+      };
+      static SignPlusMinus::Value sign_plus_minus2_;
       static int counter_plus_minus2_;
       static int pre_counter_plus_minus2_;
       static bool seesaw_init2_;
