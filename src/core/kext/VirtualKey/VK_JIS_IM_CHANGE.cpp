@@ -575,23 +575,6 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     bool cond00 = (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::ROMAN);
 
-    bool cond10 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN &&
-                   savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA);
-
-    bool cond11 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
-                   savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
-                   savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATAKANA);
-
-    bool cond12 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
-                   savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
-                   savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HALFWIDTH_KANA);
-
-    bool cond13 = (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HALFWIDTH_KANA &&
-                   savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA);
-
-    bool cond14 = (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
-                   savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA);
-
     if (replacetype == ReplaceType::SKIP_PREVIOUS) {
       skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = 1;
 
@@ -604,14 +587,24 @@ namespace org_pqrs_KeyRemap4MacBook {
            (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
             savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
            (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
-            savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)
-            )) {
+            savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA))) {
         sign_plus_minus2_ = -1;
         if (cond00) {
           others_index_tmp = SavedInputModeIndex::ROMAN;
         }
       } else if (sign_plus_minus2_ == -1     && (
-                   cond10 || cond11 || cond12 || cond13 || cond14)) {
+                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::ROMAN &&
+                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA) ||
+                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
+                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
+                    savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::KATAKANA) ||
+                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
+                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HIRAGANA &&
+                    savedInputMode_[SavedInputModeType::OTHERS] == SavedInputModeIndex::HALFWIDTH_KANA) ||
+                   (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::HALFWIDTH_KANA &&
+                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
+                   (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::KATAKANA &&
+                    savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA))) {
         sign_plus_minus2_ = 1;
       } else {}
       sign00 = sign_plus_minus2_;
