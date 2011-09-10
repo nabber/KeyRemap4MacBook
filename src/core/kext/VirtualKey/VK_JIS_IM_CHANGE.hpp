@@ -156,7 +156,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static SavedInputModeIndex::Value get_index_for_seesaw_AtoB_WSD(SeesawType::Value type);
       // XXX: DO NOT PASS int[] without length!!!
-      static SavedInputModeIndex::Value get_index_for_replaceWSD(SignPlusMinus::Value sign00, int skip[], ReplaceType::Value replacetype);
+      static SavedInputModeIndex::Value get_index_for_replaceWSD(SignPlusMinus::Value sign00, bool skip[], ReplaceType::Value replacetype);
 
       static void set_new_index(SavedInputModeIndex::Value index);
 

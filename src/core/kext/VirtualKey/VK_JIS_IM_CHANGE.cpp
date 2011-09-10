@@ -85,7 +85,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     int use_ainu = Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_general_use_ainu);
     KeyCode key00  = params.key;
     SavedInputModeIndex::Value index = SavedInputModeIndex::NONE;
-    int skip00[SavedInputModeIndex::END_] = { 0 };
+    bool skip00[SavedInputModeIndex::END_] = { false };
     ReplaceType::Value replacetype = ReplaceType::NONE;
     SeesawType::Value seesawType = SeesawType::NONE;
     SkipType::Value skipType = SkipType::NONE;
@@ -160,21 +160,21 @@ namespace org_pqrs_KeyRemap4MacBook {
         }
 
         if (! use_ainu) {
-          skip00[SavedInputModeIndex::AINU] = 1;
+          skip00[SavedInputModeIndex::AINU] = true;
         }
         if (skipType == SkipType::NONE_FORWARD ||
             skipType == SkipType::NONE_BACK) {
           replacetype = ReplaceType::NOSKIP;
         } else {
           if (skipType == SkipType::EISUU_KANA) {
-            skip00[SavedInputModeIndex::ROMAN] = 1;
-            skip00[SavedInputModeIndex::HIRAGANA] = 1;
+            skip00[SavedInputModeIndex::ROMAN] = true;
+            skip00[SavedInputModeIndex::HIRAGANA] = true;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else if (skipType == SkipType::KANA) {
-            skip00[SavedInputModeIndex::HIRAGANA] = 1;
+            skip00[SavedInputModeIndex::HIRAGANA] = true;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else if (skipType == SkipType::EISUU) {
-            skip00[SavedInputModeIndex::ROMAN] = 1;
+            skip00[SavedInputModeIndex::ROMAN] = true;
             replacetype = ReplaceType::SKIP_SPECIFIC;
           } else {
             replacetype = ReplaceType::SKIP_PREVIOUS;
@@ -575,7 +575,7 @@ namespace org_pqrs_KeyRemap4MacBook {
   }
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::Value
-  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(SignPlusMinus::Value sign00, int skip[], ReplaceType::Value replacetype)
+  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(SignPlusMinus::Value sign00, bool skip[], ReplaceType::Value replacetype)
   {
     SavedInputModeIndex::Value cur_index_tmp, others_index_tmp;
 
@@ -585,7 +585,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     bool cond00 = (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::ROMAN);
 
     if (replacetype == ReplaceType::SKIP_PREVIOUS) {
-      skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = 1;
+      skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = true;
 
     } else if (replacetype == ReplaceType::SKIP_SPECIFIC) {
       switch (sign_plus_minus2_) {
@@ -624,32 +624,54 @@ namespace org_pqrs_KeyRemap4MacBook {
       sign00 = sign_plus_minus2_;
     }
 
-    // XXX too complex!!!
     SavedInputModeIndex::Value ret = SavedInputModeIndex::NONE;
-    int continue_end00 = 0;
-    for (int i = (cur_index_tmp == SavedInputModeIndex::NONE ? 1 : cur_index_tmp);;) {
-      if ((i >= SavedInputModeIndex::END_ && sign00 == SignPlusMinus::PLUS) || (i < 1 && sign00 == SignPlusMinus::MINUS)) {
-        if (continue_end00 == 1) {
-          ret = SavedInputModeIndex::NONE;
+    for (int i = 0; i < SavedInputModeIndex::END_; ++i) {
+      // ----------------------------------------
+      // calc index
+
+      // when sign00 == SignPlusMinus::PLUS
+      //
+      // |------------------+-------------------| SavedInputModeIndex
+      //              cur_index_tmp
+      //                    -------------------->
+      // ------------------>
+      //
+      //
+      // when sign00 == SignPlusMinus::MINUS
+      //
+      // |------------------+-------------------| SavedInputModeIndex
+      //              cur_index_tmp
+      // <-------------------
+      //                     <-------------------
+
+      int index = SavedInputModeIndex::NONE;
+
+      switch (sign00) {
+        case SignPlusMinus::NONE:
           break;
-        }
-        if (sign00 == SignPlusMinus::PLUS) {
-          i = 1;
-        } else {
-          i = SavedInputModeIndex::END_ - 1;
-        }
-        continue_end00 = 1;
-        continue;
+        case SignPlusMinus::PLUS:
+          index = (cur_index_tmp + i);
+          break;
+        case SignPlusMinus::MINUS:
+          index = (cur_index_tmp + (SavedInputModeIndex::END_ - i));
+          break;
+      }
+      if (index > SavedInputModeIndex::END_) {
+        index -= SavedInputModeIndex::END_;
       }
 
-      if (cur_index_tmp != SavedInputModeIndex::NONE && cur_index_tmp != i &&
-          others_index_tmp != i) {
-        if (skip[i] != 1) {
-          ret = static_cast<SavedInputModeIndex::Value>(i);
+      if (index < 0) continue;
+      if (index >= SavedInputModeIndex::END_) continue;
+
+      // ----------------------------------------
+      if (cur_index_tmp    != SavedInputModeIndex::NONE &&
+          cur_index_tmp    != index &&
+          others_index_tmp != index) {
+        if (! skip[index]) {
+          ret = static_cast<SavedInputModeIndex::Value>(index);
           break;
         }
       }
-      i = i + sign00;
     }
 
     if (ret != SavedInputModeIndex::NONE) {
