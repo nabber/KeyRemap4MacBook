@@ -569,8 +569,6 @@ namespace org_pqrs_KeyRemap4MacBook {
     cur_index_tmp    = savedInputMode_[SavedInputModeType::CURRENT].get();
     others_index_tmp = savedInputMode_[SavedInputModeType::OTHERS].get();
 
-    bool cond00 = (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::ROMAN);
-
     if (replacetype == ReplaceType::SKIP_PREVIOUS) {
       skip[savedInputMode_[SavedInputModeType::PREVIOUS].get()] = true;
 
@@ -578,15 +576,15 @@ namespace org_pqrs_KeyRemap4MacBook {
       // XXX: Is SKIP_SPECIFIC suitable name?
       switch (nextInputSourceDetailDirection_) {
         case NextInputSourceDetailDirection::FORWARD:
-          if (cond00 ||
-              (savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
-               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
-              (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
-               savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
+          if (savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::ROMAN) {
             nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
-            if (cond00) {
-              others_index_tmp = SavedInputModeIndex::ROMAN;
-            }
+            others_index_tmp = SavedInputModeIndex::ROMAN;
+
+          } else if ((savedInputMode_[SavedInputModeType::PREVIOUS] == SavedInputModeIndex::HALFWIDTH_KANA &&
+                      savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::KATAKANA) ||
+                     (savedInputMode_[SavedInputModeType::PREVIOUS] != SavedInputModeIndex::KATAKANA &&
+                      savedInputMode_[SavedInputModeType::CURRENT] == SavedInputModeIndex::HALFWIDTH_KANA)) {
+            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
           }
           break;
 
