@@ -22,8 +22,8 @@ namespace org_pqrs_KeyRemap4MacBook {
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex VirtualKey::VK_JIS_IM_CHANGE::savedInputMode_[SavedInputModeType::END_];
 
   VirtualKey::VK_JIS_IM_CHANGE::NextInputSourceDetailDirection::Value VirtualKey::VK_JIS_IM_CHANGE::nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
-  int VirtualKey::VK_JIS_IM_CHANGE::counter_plus_minus2_ = 0;
-  int VirtualKey::VK_JIS_IM_CHANGE::pre_counter_plus_minus2_ = 0;
+  int VirtualKey::VK_JIS_IM_CHANGE::pressed_counter_     = 0;
+  int VirtualKey::VK_JIS_IM_CHANGE::pressed_counter_pre_ = 0;
   bool VirtualKey::VK_JIS_IM_CHANGE::seesaw_init2_ = false;
 
   void
@@ -149,7 +149,7 @@ namespace org_pqrs_KeyRemap4MacBook {
         if (skipType == SkipType::EISUU_KANA ||
             skipType == SkipType::KANA ||
             skipType == SkipType::EISUU) {
-          VirtualKey::VK_JIS_IM_CHANGE::reverse_sign_CHANGE_SKIP(9);
+          ++pressed_counter_;
         }
 
         if (skipType == SkipType::NONE_BACK ||
@@ -293,9 +293,24 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     if (isKeyDown) {
       if (stage == StageType::POST_REMAP) {
-        VirtualKey::VK_JIS_IM_CHANGE::reverse_sign_CHANGE_SKIP(0);
+        pressed_counter_pre_ = pressed_counter_;
+
       } else if (stage == StageType::JUST_AFTER_REMAP) {
-        VirtualKey::VK_JIS_IM_CHANGE::reverse_sign_CHANGE_SKIP(1);
+        if (pressed_counter_ == pressed_counter_pre_ && pressed_counter_ > 0) {
+          pressed_counter_ = 0;
+          pressed_counter_pre_ = 0;
+
+          // Toggle
+          switch (nextInputSourceDetailDirection_) {
+            case NextInputSourceDetailDirection::FORWARD:
+              nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
+              break;
+
+            case NextInputSourceDetailDirection::BACKWARD:
+              nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
+              break;
+          }
+        }
         return;
       }
     }
@@ -346,33 +361,6 @@ namespace org_pqrs_KeyRemap4MacBook {
       omit_initialize_ = true;
     }
     return;
-  }
-
-  void
-  VirtualKey::VK_JIS_IM_CHANGE::reverse_sign_CHANGE_SKIP(int when00)
-  {
-    if (when00 == 0) {
-      pre_counter_plus_minus2_ = counter_plus_minus2_;
-    } else if (when00 == 1) {
-      if (counter_plus_minus2_ == pre_counter_plus_minus2_ && counter_plus_minus2_ > 0) {
-        pre_counter_plus_minus2_ = 0;
-        counter_plus_minus2_ = 0;
-
-        // Toggle
-        switch (nextInputSourceDetailDirection_) {
-          case NextInputSourceDetailDirection::FORWARD:
-            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::BACKWARD;
-            break;
-
-          case NextInputSourceDetailDirection::BACKWARD:
-            nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
-            break;
-        }
-
-      } else {}
-    } else {
-      ++counter_plus_minus2_;
-    }
   }
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::Value

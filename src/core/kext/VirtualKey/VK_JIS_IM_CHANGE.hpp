@@ -170,8 +170,8 @@ namespace org_pqrs_KeyRemap4MacBook {
       static SavedInputModeIndex savedInputMode_[SavedInputModeType::END_];
 
       static NextInputSourceDetailDirection::Value nextInputSourceDetailDirection_;
-      static int counter_plus_minus2_;
-      static int pre_counter_plus_minus2_;
+      static int pressed_counter_;
+      static int pressed_counter_pre_;
       static bool seesaw_init2_;
 
       // XXX remove this value (replace by CommonData::current_workspacedata_)
