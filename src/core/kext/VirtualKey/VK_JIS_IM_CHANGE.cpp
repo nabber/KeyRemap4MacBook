@@ -576,7 +576,6 @@ namespace org_pqrs_KeyRemap4MacBook {
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::Value
   VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(SignPlusMinus::Value sign00, int skip[], ReplaceType::Value replacetype)
   {
-    SavedInputModeIndex::Value ret;
     SavedInputModeIndex::Value cur_index_tmp, others_index_tmp;
 
     cur_index_tmp    = savedInputMode_[SavedInputModeType::CURRENT].get();
@@ -625,6 +624,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     }
 
     // XXX too complex!!!
+    SavedInputModeIndex::Value ret = SavedInputModeIndex::NONE;
     int continue_end00 = 0;
     for (int i = (cur_index_tmp == SavedInputModeIndex::NONE ? 1 : cur_index_tmp);;) {
       if ((i > SavedInputModeIndex::MAX && sign00 == SignPlusMinus::PLUS) || (i < 1 && sign00 == SignPlusMinus::MINUS)) {
