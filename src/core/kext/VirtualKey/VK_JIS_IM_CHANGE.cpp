@@ -145,7 +145,7 @@ namespace org_pqrs_KeyRemap4MacBook {
         }
 
       } else {
-        int sign00;
+        SignPlusMinus::Value sign00;
         if (skipType == SkipType::EISUU_KANA ||
             skipType == SkipType::KANA ||
             skipType == SkipType::EISUU) {
@@ -154,9 +154,9 @@ namespace org_pqrs_KeyRemap4MacBook {
 
         if (skipType == SkipType::NONE_BACK ||
             skipType == SkipType::PRE_BACK) {
-          sign00 = -1;
+          sign00 = SignPlusMinus::MINUS;
         } else {
-          sign00 =  1;
+          sign00 = SignPlusMinus::PLUS;
         }
 
         if (! use_ainu) {
@@ -574,7 +574,7 @@ namespace org_pqrs_KeyRemap4MacBook {
   }
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::Value
-  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(int sign00, int skip[], ReplaceType::Value replacetype)
+  VirtualKey::VK_JIS_IM_CHANGE::get_index_for_replaceWSD(SignPlusMinus::Value sign00, int skip[], ReplaceType::Value replacetype)
   {
     SavedInputModeIndex::Value ret;
     SavedInputModeIndex::Value cur_index_tmp, others_index_tmp;
@@ -631,7 +631,7 @@ namespace org_pqrs_KeyRemap4MacBook {
           ret = SavedInputModeIndex::NONE;
           break;
         }
-        if (sign00 == 1) {
+        if (sign00 == SignPlusMinus::PLUS) {
           i = 1;
         } else {
           i = SavedInputModeIndex::MAX;
