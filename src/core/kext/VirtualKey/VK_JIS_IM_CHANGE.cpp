@@ -82,7 +82,6 @@ namespace org_pqrs_KeyRemap4MacBook {
   VirtualKey::VK_JIS_IM_CHANGE::handle(const Params_KeyboardEventCallBack& params)
   {
     SavedInputModeIndex::Value index = SavedInputModeIndex::NONE;
-    bool skip00[SavedInputModeIndex::END_] = { false };
     ReplaceType::Value replacetype = ReplaceType::NONE;
     SeesawType::Value seesawType = SeesawType::NONE;
     SkipType::Value skipType = SkipType::NONE;
@@ -156,6 +155,7 @@ namespace org_pqrs_KeyRemap4MacBook {
           direction = NextInputSourceDetailDirection::FORWARD;
         }
 
+        bool skip00[SavedInputModeIndex::END_] = { false };
         if (! Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_general_use_ainu)) {
           skip00[SavedInputModeIndex::AINU] = true;
         }
