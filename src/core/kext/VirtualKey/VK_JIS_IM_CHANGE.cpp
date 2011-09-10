@@ -81,8 +81,6 @@ namespace org_pqrs_KeyRemap4MacBook {
   bool
   VirtualKey::VK_JIS_IM_CHANGE::handle(const Params_KeyboardEventCallBack& params)
   {
-    int ignore_improveIM = Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing);
-    int use_ainu = Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_general_use_ainu);
     KeyCode key00  = params.key;
     SavedInputModeIndex::Value index = SavedInputModeIndex::NONE;
     bool skip00[SavedInputModeIndex::END_] = { false };
@@ -159,7 +157,7 @@ namespace org_pqrs_KeyRemap4MacBook {
           direction = NextInputSourceDetailDirection::FORWARD;
         }
 
-        if (! use_ainu) {
+        if (! Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_general_use_ainu)) {
           skip00[SavedInputModeIndex::AINU] = true;
         }
         if (skipType == SkipType::NONE_FORWARD ||
@@ -230,7 +228,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     if (params.ex_iskeydown) {
       bool result00 = false;
-      if (! ignore_improveIM) {
+      if (! Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing)) {
         result00 = VirtualKey::VK_JIS_IM_CHANGE::replace_WSD(newkeycode_, newflag_);
       }
       if (result00) {
