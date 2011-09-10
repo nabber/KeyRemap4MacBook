@@ -124,7 +124,6 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static void ControlWorkspaceData(Params_KeyboardEventCallBack& params, StageType::Value stage);
 
-      static void reverse_sign_CHANGE_SKIP(int when00);
       static const BridgeWorkSpaceData& getwsd_public(void) { return wsd_public_; }
 
       enum ControlWorkspaceDataType {
@@ -157,6 +156,7 @@ namespace org_pqrs_KeyRemap4MacBook {
       // XXX: DO NOT PASS int[] without length!!!
       static SavedInputModeIndex::Value get_index_for_replaceWSD(NextInputSourceDetailDirection::Value direction, bool skip[], ReplaceType::Value replacetype);
 
+      static void reverse_sign_CHANGE_SKIP(int when00);
       static void set_new_index(SavedInputModeIndex::Value index);
 
       static KeyCode newkeycode_;
