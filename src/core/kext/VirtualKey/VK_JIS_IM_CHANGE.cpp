@@ -8,7 +8,7 @@
 
 namespace org_pqrs_KeyRemap4MacBook {
   BridgeWorkSpaceData VirtualKey::VK_JIS_IM_CHANGE::wsd_public_;
-  BridgeWorkSpaceData VirtualKey::VK_JIS_IM_CHANGE::wsd_save_[VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::MAX + 1];
+  BridgeWorkSpaceData VirtualKey::VK_JIS_IM_CHANGE::wsd_save_[VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex::END_];
   BridgeWorkSpaceData VirtualKey::VK_JIS_IM_CHANGE::wsd_learned_;
 
   KeyCode VirtualKey::VK_JIS_IM_CHANGE::newkeycode_;
@@ -85,7 +85,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     int use_ainu = Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_general_use_ainu);
     KeyCode key00  = params.key;
     SavedInputModeIndex::Value index = SavedInputModeIndex::NONE;
-    int skip00[SavedInputModeIndex::MAX + 1] = { 0 };
+    int skip00[SavedInputModeIndex::END_] = { 0 };
     ReplaceType::Value replacetype = ReplaceType::NONE;
     SeesawType::Value seesawType = SeesawType::NONE;
     SkipType::Value skipType = SkipType::NONE;
@@ -215,6 +215,7 @@ namespace org_pqrs_KeyRemap4MacBook {
           break;
 
         case SavedInputModeIndex::NONE:
+        case SavedInputModeIndex::END_:
           return true;
       }
     }
@@ -546,7 +547,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
     } else {
       if (type == SeesawType::CUR_PRE) {
-        if (savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1 > SavedInputModeIndex::MAX) {
+        if (savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1 >= SavedInputModeIndex::END_) {
           savedInputMode_[SavedInputModeType::CURRENT].set(SavedInputModeIndex::ROMAN);
         } else {
           savedInputMode_[SavedInputModeType::CURRENT].set(static_cast<SavedInputModeIndex::Value>(savedInputMode_[SavedInputModeType::PREVIOUS].get() + 1));
@@ -627,7 +628,7 @@ namespace org_pqrs_KeyRemap4MacBook {
     SavedInputModeIndex::Value ret = SavedInputModeIndex::NONE;
     int continue_end00 = 0;
     for (int i = (cur_index_tmp == SavedInputModeIndex::NONE ? 1 : cur_index_tmp);;) {
-      if ((i > SavedInputModeIndex::MAX && sign00 == SignPlusMinus::PLUS) || (i < 1 && sign00 == SignPlusMinus::MINUS)) {
+      if ((i >= SavedInputModeIndex::END_ && sign00 == SignPlusMinus::PLUS) || (i < 1 && sign00 == SignPlusMinus::MINUS)) {
         if (continue_end00 == 1) {
           ret = SavedInputModeIndex::NONE;
           break;
@@ -635,7 +636,7 @@ namespace org_pqrs_KeyRemap4MacBook {
         if (sign00 == SignPlusMinus::PLUS) {
           i = 1;
         } else {
-          i = SavedInputModeIndex::MAX;
+          i = SavedInputModeIndex::END_ - 1;
         }
         continue_end00 = 1;
         continue;

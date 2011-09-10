@@ -48,16 +48,14 @@ namespace org_pqrs_KeyRemap4MacBook {
       class SavedInputModeIndex {
       public:
         enum Value {
-          // XXX: change NONE to 0.
-          NONE            = -1,
-          // XXX: change all values to auto-indexed.
-          ROMAN           = 1,
-          HIRAGANA        = 2,
-          KATAKANA        = 3,
-          HALFWIDTH_KANA  = 4,
-          AINU            = 5,
-          FULLWIDTH_ROMAN = 6,
-          MAX             = 6,
+          NONE,
+          ROMAN,
+          HIRAGANA,
+          KATAKANA,
+          HALFWIDTH_KANA,
+          AINU,
+          FULLWIDTH_ROMAN,
+          END_,
         };
 
         SavedInputModeIndex(void) : value_(NONE) {}
@@ -179,7 +177,7 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       // XXX remove this value (replace by CommonData::current_workspacedata_)
       static BridgeWorkSpaceData wsd_public_;
-      static BridgeWorkSpaceData wsd_save_[SavedInputModeIndex::MAX + 1];
+      static BridgeWorkSpaceData wsd_save_[SavedInputModeIndex::END_];
       // XXX this value name may be wrong. (not wsd_learned_ but "bool initialized"?)
       static BridgeWorkSpaceData wsd_learned_;
 
