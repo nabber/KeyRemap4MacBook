@@ -22,6 +22,7 @@ namespace org_pqrs_KeyRemap4MacBook {
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex VirtualKey::VK_JIS_IM_CHANGE::savedInputMode_[SavedInputModeType::END_];
 
   VirtualKey::VK_JIS_IM_CHANGE::NextInputSourceDetailDirection::Value VirtualKey::VK_JIS_IM_CHANGE::nextInputSourceDetailDirection_ = NextInputSourceDetailDirection::FORWARD;
+  // XXX change variable name
   int VirtualKey::VK_JIS_IM_CHANGE::pressed_counter_     = 0;
   int VirtualKey::VK_JIS_IM_CHANGE::pressed_counter_pre_ = 0;
   bool VirtualKey::VK_JIS_IM_CHANGE::seesaw_init2_ = false;
