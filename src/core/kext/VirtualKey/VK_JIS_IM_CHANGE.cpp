@@ -624,9 +624,10 @@ namespace org_pqrs_KeyRemap4MacBook {
       sign00 = sign_plus_minus2_;
     }
 
+    // XXX too complex!!!
     int continue_end00 = 0;
     for (int i = (cur_index_tmp == SavedInputModeIndex::NONE ? 1 : cur_index_tmp);;) {
-      if (i > SavedInputModeIndex::MAX && sign00 == 1 || i < 1 && sign00 == -1) {
+      if ((i > SavedInputModeIndex::MAX && sign00 == SignPlusMinus::PLUS) || (i < 1 && sign00 == SignPlusMinus::MINUS)) {
         if (continue_end00 == 1) {
           ret = SavedInputModeIndex::NONE;
           break;
