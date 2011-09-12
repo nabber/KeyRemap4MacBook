@@ -119,8 +119,8 @@ namespace org_pqrs_KeyRemap4MacBook {
 
       static void set_omit_initialize(bool omit_initialize) { omit_initialize_ = omit_initialize; }
 
-      static void static_set_case1_pass_restore(int case1_pass_restore00);
-      static int get_case1_pass_restore(void) { return case1_pass_restore2_; }
+      static void static_set_case1_pass_restore(bool newval);
+      static bool get_case1_pass_restore(void) { return case1_pass_restore2_; }
 
       static void ControlWorkspaceData(Params_KeyboardEventCallBack& params, StageType::Value stage);
 
@@ -165,7 +165,7 @@ namespace org_pqrs_KeyRemap4MacBook {
       static CallbackType::Value callbacktype_;
 
       static bool omit_initialize_;
-      static int case1_pass_restore2_;
+      static bool case1_pass_restore2_;
 
       static SavedInputModeIndex savedInputMode_[SavedInputModeType::END_];
 

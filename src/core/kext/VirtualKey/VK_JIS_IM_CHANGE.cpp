@@ -17,7 +17,7 @@ namespace org_pqrs_KeyRemap4MacBook {
   VirtualKey::VK_JIS_IM_CHANGE::CallbackType::Value VirtualKey::VK_JIS_IM_CHANGE::callbacktype_ = VirtualKey::VK_JIS_IM_CHANGE::CallbackType::INIT;
   bool VirtualKey::VK_JIS_IM_CHANGE::omit_initialize_ = true;
   // XXX change variable name
-  int VirtualKey::VK_JIS_IM_CHANGE::case1_pass_restore2_ = 0;
+  bool VirtualKey::VK_JIS_IM_CHANGE::case1_pass_restore2_ = false;
 
   VirtualKey::VK_JIS_IM_CHANGE::SavedInputModeIndex VirtualKey::VK_JIS_IM_CHANGE::savedInputMode_[SavedInputModeType::END_];
 
@@ -72,11 +72,10 @@ namespace org_pqrs_KeyRemap4MacBook {
   }
 
   void
-  VirtualKey::VK_JIS_IM_CHANGE::static_set_case1_pass_restore(int case1_pass_restore00)
+  VirtualKey::VK_JIS_IM_CHANGE::static_set_case1_pass_restore(bool newval)
   {
-    int ignore_improveIM = Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing);
-    if (ignore_improveIM || case1_pass_restore00 != 0 && case1_pass_restore00 != 1) return;
-    case1_pass_restore2_ = case1_pass_restore00;
+    if (Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing)) return;
+    case1_pass_restore2_ = newval;
   }
 
   bool
