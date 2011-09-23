@@ -177,7 +177,8 @@ namespace org_pqrs_KeyRemap4MacBook {
                        firstKey != KeyCode::VK_JIS_TEMPORARY_RESTORE  &&
                        ! VirtualKey::VK_JIS_IM_CHANGE::get_case1_pass_restore() &&
                        ! ignore_improveIM) {
-              VirtualKey::VK_JIS_TEMPORARY::vk_restore(remapParams.params, 0);
+              EventOutputQueue::FireKey::fire_downup(Flags(0), KeyCode::VK_JIS_TEMPORARY_RESTORE,
+                                                     remapParams.params.keyboardType);
             }
 
             if (! ignore_improveIM) {
@@ -210,7 +211,8 @@ namespace org_pqrs_KeyRemap4MacBook {
                 firstKey != KeyCode::VK_JIS_TEMPORARY_AINU     &&
                 firstKey != KeyCode::VK_JIS_TEMPORARY_RESTORE  &&
                 ! ignore_improveIM) {
-              VirtualKey::VK_JIS_TEMPORARY::vk_restore(remapParams.params, 0);
+              EventOutputQueue::FireKey::fire_downup(Flags(0), KeyCode::VK_JIS_TEMPORARY_RESTORE,
+                                                     remapParams.params.keyboardType);
             }
 
             KeyboardRepeat::cancel();
