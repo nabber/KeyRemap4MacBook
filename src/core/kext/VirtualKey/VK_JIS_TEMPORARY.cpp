@@ -177,17 +177,4 @@ namespace org_pqrs_KeyRemap4MacBook {
     savedinputmodedetail_   = InputModeDetail::NONE;
     currentinputmodedetail_ = InputModeDetail::NONE;
   }
-
-  bool
-  VirtualKey::VK_JIS_TEMPORARY::vk_restore(const Params_KeyboardEventCallBack& params, int execute_fire00)
-  {
-    if (&params) {
-      EventOutputQueue::FireKey::fire_downup(Flags(0), KeyCode::VK_JIS_TEMPORARY_RESTORE, params.keyboardType);
-      if (execute_fire00) {
-        EventOutputQueue::FireKey::fire(params);
-      }
-      return true;
-    }
-    return false;
-  }
 }

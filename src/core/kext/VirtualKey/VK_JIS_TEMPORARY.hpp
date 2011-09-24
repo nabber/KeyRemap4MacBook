@@ -11,8 +11,6 @@ namespace org_pqrs_KeyRemap4MacBook {
       static bool handle(const Params_KeyboardEventCallBack& params);
 
       static void resetSavedIMD(void);
-      // XXX change the function name
-      static bool vk_restore(const Params_KeyboardEventCallBack& params, int execute_fire00);
 
     private:
       enum {
