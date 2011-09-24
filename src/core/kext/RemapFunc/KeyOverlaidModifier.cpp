@@ -1,4 +1,5 @@
 #include "Config.hpp"
+#include "EventOutputQueue.hpp"
 #include "EventWatcher.hpp"
 #include "KeyOverlaidModifier.hpp"
 #include "../VirtualKey/VK_LAZY.hpp"
@@ -160,11 +161,13 @@ namespace org_pqrs_KeyRemap4MacBook {
               keytokey_fire_.call_remap_with_VK_PSEUDO_KEY(EventType::UP);
 
             } else if (! Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing)) {
-              VirtualKey::VK_JIS_TEMPORARY::vk_restore(remapParams.params, 1);
+              EventOutputQueue::FireKey::fire_downup(Flags(0), KeyCode::VK_JIS_TEMPORARY_RESTORE, remapParams.params.keyboardType);
+              EventOutputQueue::FireKey::fire(remapParams.params);
             }
 
           } else if (! Config::get_essential_config(BRIDGE_ESSENTIAL_CONFIG_INDEX_remap_jis_ignore_improvement_IM_changing)) {
-            VirtualKey::VK_JIS_TEMPORARY::vk_restore(remapParams.params, 1);
+            EventOutputQueue::FireKey::fire_downup(Flags(0), KeyCode::VK_JIS_TEMPORARY_RESTORE, remapParams.params.keyboardType);
+            EventOutputQueue::FireKey::fire(remapParams.params);
           }
 
           EventWatcher::unset(isAnyEventHappen_);
