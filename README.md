@@ -18,7 +18,7 @@ Web pages
 
 
 System requirements
--------------------
+----------------------
 
 Mac OS X 10.9 (Maveriks) or higher.  KeyRemap4MacBook works for all Mac products, including the MacBook series, the iMac, Mac mini, and Mac Pro.
 
